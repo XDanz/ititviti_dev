@@ -29,7 +29,7 @@ Start additional terminal, (terminal 2) and run:
 
 <code>
 
-$ ./client_start 127.0.0.1 \<port> <num-requests>
+$ ./client_start 127.0.0.1 \<port> \<num-requests>
 
 </code>
 
