@@ -16,7 +16,7 @@ $ make
 
 </code>
 
-First it is required to stat the echo server, In terminal 1 run:
+First it is required to start the echo server, (in terminal 1) run:
 <code>
 
 ./server_start 127.0.0.1 \<port>
