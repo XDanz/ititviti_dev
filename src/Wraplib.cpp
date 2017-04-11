@@ -5,6 +5,8 @@
 
 #include "EchoServer.h"
 #include <arpa/inet.h>
+#include "RTPeer.h"
+
 const char *
 EchoServer::Inet_ntop(int family, const void *addrptr, char *strptr, size_t len)
 {

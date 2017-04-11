@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sys/poll.h>
 #include <cstdlib>
-#include "RTPeer.h
+#include "RTPeer.h"
 #include <cerrno>
 #include <zconf.h>
 #include "EchoServer.h"
@@ -10,7 +10,6 @@
 // Created by danter on 2017-04-10.
 //
 typedef sockaddr SA;
-int		daemon_proc;		/* set nonzero by daemon_init() */
 
 int
 EchoServer::Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)

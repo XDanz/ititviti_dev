@@ -1,4 +1,6 @@
 /* include readn */
+#include <zconf.h>
+#include <errno.h>
 #include	"RTPeer.h"
 
 ssize_t						/* Read "n" bytes from a descriptor. */
@@ -8,7 +10,7 @@ readn(int fd, void *vptr, size_t n)
 	ssize_t	nread;
 	char	*ptr;
 
-	ptr = vptr;
+	ptr = (char	*)vptr;
 	nleft = n;
 	while (nleft > 0) {
 		if ( (nread = read(fd, ptr, nleft)) < 0) {

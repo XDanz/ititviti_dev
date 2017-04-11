@@ -5,6 +5,7 @@
 #ifndef ITIVITI_DEV_RTPEER_H
 #define ITIVITI_DEV_RTPEER_H
 
+#include <stdio.h>
 class RTPeer {
 
 protected:
@@ -14,7 +15,7 @@ protected:
     static void err_quit(const char *fmt, ...);
     static void Close(int fd);
     static void Writen(int fd, void *ptr, size_t nbytes);
-    static Readn(int fd, void *ptr, size_t nbytes);
+    static ssize_t Readn(int fd, void *ptr, size_t nbytes);
 };
 
 #endif //ITIVITI_DEV_RTPEER_H

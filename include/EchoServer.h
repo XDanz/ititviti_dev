@@ -7,8 +7,9 @@
 
 #include <sys/socket.h>
 #include <string>
+#include "RTPeer.h"
 
-class EchoServer: public RTPeer {
+class EchoServer : public RTPeer {
 
 public:
     void start();

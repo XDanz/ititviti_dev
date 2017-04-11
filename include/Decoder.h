@@ -5,10 +5,12 @@
 #ifndef ITIVITI_DEV_DECODER_H
 #define ITIVITI_DEV_DECODER_H
 
+#include <cstdint>
+
 class Decoder {
 // Warning:  Untested preconditions (e.g., 0 <= size <= 8)
 public:
-    static uint64_t DecodeIntBigEndian(uint8_t val[], int offset, int size);
+    uint64_t DecodeIntBigEndian(uint8_t val[], int offset, int size);
         
 };
 
