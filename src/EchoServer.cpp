@@ -9,8 +9,6 @@
 //
 // Created by danter on 2017-04-10.
 //
-typedef sockaddr SA;
-
 int
 EchoServer::Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)
 {
@@ -67,8 +65,6 @@ EchoServer::Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
 }
 
 
-
-
 void EchoServer::start() {
     int i, maxi, listenfd, connfd, sockfd;
     int nready;
@@ -85,7 +81,7 @@ void EchoServer::start() {
     Inet_pton(AF_INET, serverHost.c_str(), &servaddr.sin_addr.s_addr);
     servaddr.sin_port = htons(serverPort);
 
-    Bind(listenfd, (SA*) & servaddr, sizeof(servaddr));
+    Bind(listenfd, (sockaddr *) & servaddr, sizeof(servaddr));
 
     Listen(listenfd, LISTENQ);
 
@@ -100,8 +96,7 @@ void EchoServer::start() {
 
         if (client[0].revents & POLLRDNORM) {    /* new client connection */
             clilen = sizeof(cliaddr);
-            connfd = Accept(listenfd, (SA*) & cliaddr, &clilen);
-            //printf("new client: %s\n", Sock_ntop((SA *) &cliaddr, clilen));
+            connfd = Accept(listenfd, (sockaddr*) & cliaddr, &clilen);
 
             for (i = 1; i<FOPEN_MAX; i++)
                 if (client[i].fd<0) {
@@ -126,9 +121,7 @@ void EchoServer::start() {
                 if ((n = read(sockfd, buf, MAXLINE))<0) {
                     if (errno==ECONNRESET) {
                         /*4connection reset by client */
-#ifdef    NOTDEF
                         printf("client[%d] aborted connection\n", i);
-#endif
                         Close(sockfd);
                         client[i].fd = -1;
                     }
@@ -137,9 +130,7 @@ void EchoServer::start() {
                 }
                 else if (n==0) {
                     /*4connection closed by client */
-#ifdef    NOTDEF
                     printf("client[%d] closed connection\n", i);
-#endif
                     Close(sockfd);
                     client[i].fd = -1;
                 }

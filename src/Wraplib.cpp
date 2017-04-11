@@ -28,6 +28,4 @@ EchoServer::Inet_pton(int family, const char *strptr, void *addrptr)
 		err_sys("inet_pton error for %s", strptr);	/* errno set */
 	else if (n == 0)
 		err_quit("inet_pton error for %s", strptr);	/* errno not set */
-
-	/* nothing to return */
 }

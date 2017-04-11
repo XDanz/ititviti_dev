@@ -22,14 +22,9 @@ protected:
     const int  INFTIM  = (-1);
 private:
     int Poll(struct pollfd *fdarray, unsigned long nfds, int timeout);
-    //void err_sys(const char *fmt, ...);
-    //void err_doit(int errnoflag, int level, const char *fmt, va_list ap);
     void Bind(int fd, const struct sockaddr *sa, socklen_t salen);
     void Listen(int fd, int backlog);
     int Accept(int fd, struct sockaddr *sa, socklen_t *salenptr);
-    //void err_quit(const char *fmt, ...);
-    //void Close(int fd);
-
     const char * Inet_ntop(int family, const void *addrptr, char *strptr, size_t len);
     void Inet_pton(int family, const char *strptr, void *addrptr);
 
