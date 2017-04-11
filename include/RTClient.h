@@ -52,7 +52,7 @@ private:
     int port;
     uint64_t cnt; // Number of messages to send
     // Each message is associated with a start clock to be able to count
-    // the round trip time
+    // the round trip time, each message is identified by message count
     std::map<uint64_t,std::chrono::steady_clock::time_point> messages;
     double millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start);
     double avg = 0; // The average multiplied by the cnt

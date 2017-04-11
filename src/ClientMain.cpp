@@ -1,15 +1,31 @@
 #include <RTClient.h>
+#include <iostream>
 //
 // Created by danter on 2017-04-10.
 //
 int
 main(int argc, char **argv)
 {
-     int cnt = 10;
-     RTClient client {std::string{"127.0.0.1"}, 4179, cnt};
+     if (argc != 4) {
+          std::cerr << "usage: client_start <IPaddress> <port> <num>" << std::endl;
+          exit(1);
+     }
+
+     int port, cnt;
+
+
+     if ((port = atoi(argv[2])) == 0) {
+          std::cerr << "'" << argv[2] << "' is not a number!" << std::endl;
+          exit(1);
+     }
+
+     if ((cnt = atoi(argv[3])) == 0) {
+          std::cerr << "'" << argv[3] << "' is not a number!" << std::endl;
+          exit(1);
+     }
+
+     RTClient client {std::string{argv[1]}, port, cnt};
      client.start();
-
-
 }
 
 
