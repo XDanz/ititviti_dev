@@ -2,7 +2,7 @@
 
 Developer Coding Exercise
 
-####Task
+#### Task
 
 Client connect through a stream socket to a server and sends messages to the server which echos back the 
 bytes received. The client receives and identifies the same message it sent.
@@ -14,7 +14,7 @@ When the client have sent all the *n* messages the average *RTT* and and the thr
 is calculated for all the messages which is displayed at the end before the client executable
 ends.
 
-####Implementation details
+#### Implementation details
 
 The client writes *n* messages, which is specified as a argument when running the client.
 For each message that is written to the server it associates the message with a timestamp *s* 
@@ -28,7 +28,7 @@ received. A diff (*=e-s*) is calculated and displayed to standard out.
 The message has been chosen to be of type **uint64_t** which is guarantee to be 8 bytes in length on
 all platforms.
 
-#####The RTT and throughput calculation
+##### The RTT and throughput calculation
 
 A time stamp *start* is created before sending the first message to the server and time stamp *end* is
 taken after *n* messages has been sent to the server. The difference is calculated *end - start* and divided
@@ -52,16 +52,16 @@ following:
 
 1. The TCP/IP header size
 
-####Installation
+#### Installation
 
-#####Requirement
+##### Requirement
 
 To compile and run the application the following is required:
 
 1. cmake >= 3.5.1
 2. GCC 5.4.0, C++ with std 11
   
-#####build
+##### build
 
 ```shell
 $ mkdir build 
@@ -69,7 +69,7 @@ $ cd build
 $ cmake ..
 $ make
 ```
-#####run
+##### run
 
 First it is required to start the echo server, in one terminal (1) run:
 
