@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include "RTPeer.h"
 #include <cerrno>
-#include <zconf.h>
+#include <unistd.h>
 #include "EchoServer.h"
 //
 // Created by danter on 2017-04-10.

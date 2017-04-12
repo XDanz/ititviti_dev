@@ -6,7 +6,8 @@
 #include <cstdlib>
 #include <errno.h>
 #include <cstring>
-#include <zconf.h>
+#include <stdarg.h>
+#include <unistd.h>
 #include "RTPeer.h"
 
 void

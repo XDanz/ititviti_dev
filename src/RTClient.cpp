@@ -8,8 +8,6 @@
  *
  */
 #include <netinet/in.h>
-#include <string.h>
-#include <arpa/inet.h>
 #include <chrono>
 #include <iostream>
 #include <iomanip>
@@ -24,7 +22,8 @@ void RTClient::start()
 
     uint8_t in[sizeof(uint64_t)];
     Decoder decoder;
-    for (uint64_t i = 0; i < cnt; i++) {
+    for (uint64_t i = 0; i < cnt; i++)
+    {
         Readn(sockfd, in, sizeof(uint64_t));
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
@@ -45,12 +44,13 @@ void RTClient::start()
     std::cout << "Throughput: " << (cnt*sizeof(uint64_t)*1000)/(elapsed) << " Bps" << std::endl;
 }
 
-double RTClient::millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start) {
+double RTClient::millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start)
+{
     double delta = std::chrono::duration_cast<std::chrono::nanoseconds> (end - start).count()/double(1000000);
     return delta;
 }
 
-void * RTClient::producer_thread()
+void RTClient::producer_thread()
 {   uint8_t out[sizeof(uint64_t)];
     Encoder encoder;
 
@@ -64,5 +64,4 @@ void * RTClient::producer_thread()
     }
     std::chrono::steady_clock::time_point end_run = std::chrono::steady_clock::now();
     elapsed = millis_diff(end_run, start_run);
-
 }

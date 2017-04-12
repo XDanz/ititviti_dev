@@ -1,6 +1,6 @@
 /* include readn */
-#include <zconf.h>
 #include <errno.h>
+#include <unistd.h>
 #include	"RTPeer.h"
 
 ssize_t						/* Read "n" bytes from a descriptor. */

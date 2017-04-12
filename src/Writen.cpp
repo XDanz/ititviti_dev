@@ -1,6 +1,6 @@
 /* include writen */
 #include <cerrno>
-#include <zconf.h>
+#include <unistd.h>
 #include "RTPeer.h"
 
 ssize_t						/* Write "n" bytes to a descriptor. */

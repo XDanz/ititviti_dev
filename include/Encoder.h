@@ -13,7 +13,7 @@
 
 //!  A class intend to encode unsigned type big-endian to array of size to unsigned type.
 /*!
-  A utility class to decode big-endian array of size to uint64_t.
+  A utility class to Encode uint64_t to big-endian value to a uint8_t array of sizeof(uint64_t).
 
   The class contains only one member function
 */
