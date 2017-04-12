@@ -23,7 +23,7 @@ and store the pair in a *std::map*.
 An additional thread is started to read all the messages echoed back from the server to the client on
 the same socket. When the thread receives a message it finds the message in the map and calculates
 the *RTT* for the specific message. This is done through a timestamp *e* when the whole message is 
-received. A diff (*=e-s*) is calculated and displayed to standard out. 
+received. A diff *e-s* is calculated and displayed to standard out. 
 
 The message has been chosen to be of type **uint64_t** which is guarantee to be 8 bytes in length on
 all platforms.
@@ -89,7 +89,7 @@ The *\<num-request\>* is the number of request the client is issued to the serve
  
 For example:
  ```shell
- $ ./client_start 127.0.0.1 4174 20
+ $ ./client_start 127.0.0.1 4174 10
 RT = 0.213776 millis
 RT = 0.248452 millis
 RT = 0.244865 millis
