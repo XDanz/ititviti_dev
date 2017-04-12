@@ -1,7 +1,12 @@
-//
-// Created by danter on 2017-04-10.
-//
-
+/**
+ * @file   RTClient.h
+ * @Author Daniel Terranova (daniel.terranova@gmail.com)
+ * @date   April, 2017
+ * @brief  File contains declaration of the TCP Client which calculate RTT of a message.
+ *
+ * Detailed description of file.
+ *
+ */
 #include <netinet/in.h>
 #include <string.h>
 #include <arpa/inet.h>

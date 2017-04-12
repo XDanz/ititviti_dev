@@ -1,7 +1,17 @@
-//
-// Created by danter on 2017-04-10.
-//
-
+/**
+ * @file   RTClient.h
+ * @Author Daniel Terranova (daniel.terranova@gmail.com)
+ * @date   April, 2017
+ * @brief  File contains declaration of the TCP Client which calculate RTT of a message.
+ *
+ * RT Client or Round Trip Client send a message as a unsigned integer to the server
+ * and calculate th Round Trip time for a message. The unsigned integer is stored
+ * in a map together with a starting time before it is written to the underlying
+ * TCP Buffer.
+ *
+ * The calculated RTT is not as accurate
+ *
+ */
 #ifndef ITIVITI_DEV_RTCLIENT_H
 #define ITIVITI_DEV_RTCLIENT_H
 
