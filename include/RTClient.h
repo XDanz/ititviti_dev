@@ -26,6 +26,7 @@
 #include <string>
 #include <map>
 #include "RTPeer.h"
+#include "SockApi.h"
 #include <chrono>
 #include <string.h>
 #include <arpa/inet.h>
@@ -40,22 +41,20 @@ public:
      * @param port TCP port corresponding the listening host to which the client connect to
      * @param cnt Number of messages to produce
      */
-    RTClient(const std::string& host, int port, int cnt): host(host),
-                                                          port(port), cnt(cnt) {
+    RTClient(SockApi& sockApi,
+             const std::string& host,
+             int port,
+             int cnt): sockApi(sockApi), host(host), port(port), cnt(cnt) {
         struct sockaddr_in	servaddr;
 
-        if ( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-            err_sys("socket error");
-
+        sockfd = sockApi.createSocket();
         bzero(&servaddr, sizeof(servaddr));
 
         servaddr.sin_family = AF_INET;
         servaddr.sin_port   = htons(port);
-        if (inet_pton(AF_INET, host.c_str(), &servaddr.sin_addr) <= 0)
-            err_quit("inet_pton error for %s", host.c_str());
 
-        if (connect(sockfd, (sockaddr *) &servaddr, sizeof(servaddr)) < 0)
-            err_sys("connect error");
+        sockApi.setAddr(host,&servaddr.sin_addr);
+        sockApi.connectfd(sockfd, (sockaddr *) &servaddr, sizeof(servaddr));
 
     };
     /**!
@@ -79,6 +78,8 @@ private:
     // Each message is associated with a start clock to be able to count
     // the round trip time, each message is identified by message count which increases monotonically.
     std::map<uint64_t,std::chrono::steady_clock::time_point> messages;
+
+    const SockApi& sockApi;
 
  /*!
   * @name    millis_diff()

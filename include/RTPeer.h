@@ -6,12 +6,14 @@
 #define ITIVITI_DEV_RTPEER_H
 
 #include <stdio.h>
+#include <string>
+
 class RTPeer {
 
 protected:
     static const int MAXLINE = 4096;	/* max text line length */
     static void err_sys(const char *fmt, ...);
-    static void err_doit(int errnoflag, int level, const char *fmt, va_list ap);
+    static std::string err_doit(int errnoflag, int level, const char *fmt, va_list ap);
     static void err_quit(const char *fmt, ...);
     static void Close(int fd);
     static void Writen(int fd, void *ptr, size_t nbytes);

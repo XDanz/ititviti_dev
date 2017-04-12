@@ -20,7 +20,7 @@ RTPeer::err_sys(const char *fmt, ...)
     exit(1);
 }
 
-void RTPeer::err_doit(int errnoflag, int level, const char *fmt, va_list ap)
+std::string RTPeer::err_doit(int errnoflag, int level, const char *fmt, va_list ap)
 {
     int		errno_save, n;
     char	buf[MAXLINE + 1];
@@ -36,7 +36,7 @@ void RTPeer::err_doit(int errnoflag, int level, const char *fmt, va_list ap)
     fputs(buf, stderr);
     fflush(stderr);
 
-    return;
+    return std::string(buf);
 }
 
 void
