@@ -31,7 +31,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-class RTClient: public RTPeer {
+class RTClient {
 public:
     /**
      * Constructor to initiate RTClient
@@ -47,14 +47,14 @@ public:
              int cnt): sockApi(sockApi), host(host), port(port), cnt(cnt) {
         struct sockaddr_in	servaddr;
 
-        sockfd = sockApi.createSocket();
+        sockApi.createSocket();
         bzero(&servaddr, sizeof(servaddr));
 
         servaddr.sin_family = AF_INET;
         servaddr.sin_port   = htons(port);
 
         sockApi.setAddr(host,&servaddr.sin_addr);
-        sockApi.connectfd(sockfd, (sockaddr *) &servaddr, sizeof(servaddr));
+        sockApi.connectfd((sockaddr *) &servaddr, sizeof(servaddr));
 
     };
     /**!
@@ -79,7 +79,7 @@ private:
     // the round trip time, each message is identified by message count which increases monotonically.
     std::map<uint64_t,std::chrono::steady_clock::time_point> messages;
 
-    const SockApi& sockApi;
+    SockApi& sockApi;
 
  /*!
   * @name    millis_diff()
@@ -96,6 +96,6 @@ private:
     double millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start);
     double avg = 0; // The average multiplied by the cnt to calculate the average
     double elapsed = 0; // The elapsed time of all the written cnt messages. This is used to calculate throughput
-    int sockfd;  // socket file descriptor
+    //int sockfd;  // socket file descriptor
 };
 #endif //ITIVITI_DEV_RTCLIENT_H

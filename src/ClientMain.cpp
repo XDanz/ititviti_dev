@@ -24,7 +24,8 @@ main(int argc, char **argv)
           exit(1);
      }
 
-     RTClient client {std::string{argv[1]}, port, cnt};
+     SockApiImpl sockApi{};
+     RTClient client {sockApi, std::string{argv[1]}, port, cnt};
      client.start();
 }
 
