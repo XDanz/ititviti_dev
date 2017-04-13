@@ -17,8 +17,7 @@
 #include <thread>
 
 void RTClient::start()
-{
-    std::thread producer([this] { this->producer_thread(); });
+{   std::thread producer([this] { this->produce(); });
 
     uint8_t in[sizeof(uint64_t)];
     Decoder decoder;
@@ -28,14 +27,16 @@ void RTClient::start()
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
-        uint64_t val = decoder.DecodeIntBigEndian(in,0, sizeof(uint64_t));
+        uint64_t val = decoder.decodeIntBigEndian(in, 0, sizeof(uint64_t));
         std::map<uint64_t,std::chrono::steady_clock::time_point>::iterator iterator;
         iterator = messages.find(val);
-        if (iterator != messages.end()) {
+        if (iterator != messages.end())
+        {
             double rtt = millis_diff(end, iterator->second);
             avg += rtt;
             std::cout << "RT = " << millis_diff(end, iterator->second)
                       << " millis" << std::endl;
+            messages.erase(val);
         }
     }
 
@@ -50,14 +51,14 @@ double RTClient::millis_diff(std::chrono::steady_clock::time_point end, std::chr
     return delta;
 }
 
-void RTClient::producer_thread()
+void RTClient::produce()
 {   uint8_t out[sizeof(uint64_t)];
     Encoder encoder;
 
     std::chrono::steady_clock::time_point start_run = std::chrono::steady_clock::now();
     for (uint64_t i = 0; i < cnt; i++)
     {
-        encoder.EncodeIntBigEndian(out, i, 0 , sizeof(uint64_t));
+        encoder.encodeIntBigEndian(out, i, 0, sizeof(uint64_t));
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         messages.insert(std::pair<uint64_t, std::chrono::steady_clock::time_point>{i, begin});
         sockApi.Writen(out, sizeof(uint64_t));

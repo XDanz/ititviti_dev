@@ -38,7 +38,7 @@ public:
  * @endcode
  * // Warning:  Untested preconditions (e.g., 0 <= size <= 8)
  */
-  uint64_t DecodeIntBigEndian(uint8_t val[], int offset, int size);
+  uint64_t decodeIntBigEndian(uint8_t *val, int offset, int size);
         
 };
 

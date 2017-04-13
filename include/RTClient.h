@@ -64,7 +64,7 @@ public:
     void start();
 private:
     // The method to run by starting thread
-    void producer_thread();
+    void produce();
 
     // host string containing an IPv4 network address in dotted-decimal
     const std::string& host;
