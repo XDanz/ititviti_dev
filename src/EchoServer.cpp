@@ -12,14 +12,13 @@
 int
 EchoServer::Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)
 {
-    int		n;
+    int n;
 
     if ( (n = poll(fdarray, nfds, timeout)) < 0)
         err_sys("poll error");
 
     return(n);
 }
-
 
 void
 EchoServer::Bind(int fd, const struct sockaddr *sa, socklen_t salen)
@@ -35,12 +34,6 @@ EchoServer::Bind(int fd, const struct sockaddr *sa, socklen_t salen)
 void
 EchoServer::Listen(int fd, int backlog)
 {
-    char	*ptr;
-
-    /*4can override 2nd argument with environment variable */
-    if ( (ptr = getenv("LISTENQ")) != NULL)
-        backlog = atoi(ptr);
-
     if (listen(fd, backlog) < 0)
         err_sys("listen error");
 }
@@ -48,7 +41,7 @@ EchoServer::Listen(int fd, int backlog)
 int
 EchoServer::Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
 {
-    int		n;
+    int n;
 
     again:
     if ( (n = accept(fd, sa, salenptr)) < 0) {
@@ -65,7 +58,8 @@ EchoServer::Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
 }
 
 
-void EchoServer::start() {
+void EchoServer::start() 
+{
     int i, maxi, listenfd, connfd, sockfd;
     int nready;
     ssize_t n;
@@ -91,45 +85,53 @@ void EchoServer::start() {
         client[i].fd = -1;        /* -1 indicates available entry */
     maxi = 0;                    /* max index into client[] array */
 
-    for (;;) {
+    for (;;) 
+    {
         nready = Poll(client, maxi+1, INFTIM);
 
-        if (client[0].revents & POLLRDNORM) {    /* new client connection */
+        /** data may be read on listening file descriptor which means
+         * that new client has connected
+         */
+        if (client[0].revents & POLLRDNORM) 
+        {    /** new client connection **/
             clilen = sizeof(cliaddr);
-            connfd = Accept(listenfd, (sockaddr*) & cliaddr, &clilen);
+            connfd = Accept(listenfd, (sockaddr*) &cliaddr, &clilen);
 
-            for (i = 1; i<FOPEN_MAX; i++)
-                if (client[i].fd<0) {
-                    client[i].fd = connfd;    /* save descriptor */
+            for (i = 1; i < FOPEN_MAX; i++)
+                if (client[i].fd < 0) {
+                    client[i].fd = connfd;    /** save descriptor **/
                     break;
                 }
             if (i==FOPEN_MAX)
                 err_quit("too many clients");
 
             client[i].events = POLLRDNORM;
-            if (i>maxi)
-                maxi = i;                /* max index in client[] array */
+            if (i > maxi)
+                maxi = i;                /** max index in client[] array **/
 
             if (--nready<=0)
-                continue;                /* no more readable descriptors */
+                continue;                /** no more readable descriptors **/
         }
 
-        for (i = 1; i<=maxi; i++) {    /* check all clients for data */
-            if ((sockfd = client[i].fd)<0)
+        for (i = 1; i<=maxi; i++) 
+        {    /** check all clients for data **/
+            if ( (sockfd = client[i].fd) < 0)
                 continue;
-            if (client[i].revents & (POLLRDNORM | POLLERR)) {
-                if ((n = read(sockfd, buf, MAXLINE))<0) {
-                    if (errno==ECONNRESET) {
-                        /*4connection reset by client */
+            if (client[i].revents & (POLLRDNORM | POLLERR)) 
+            {    /** Read/Write event or error */
+                if ((n = read(sockfd, buf, MAXLINE))<0) 
+                {
+                    if (errno==ECONNRESET) 
+                    {
+                        /** connection reset by client **/
                         printf("client[%d] aborted connection\n", i);
                         Close(sockfd);
                         client[i].fd = -1;
                     }
                     else
                         err_sys("read error");
-                }
-                else if (n==0) {
-                    /*4connection closed by client */
+                } else if (n==0) {
+                    /** connection closed by client **/
                     printf("client[%d] closed connection\n", i);
                     Close(sockfd);
                     client[i].fd = -1;
@@ -138,7 +140,7 @@ void EchoServer::start() {
                     Writen(sockfd, buf, n);
 
                 if (--nready<=0)
-                    break;                /* no more readable descriptors */
+                    break;                /** no more readable descriptors **/
             }
         }
     }

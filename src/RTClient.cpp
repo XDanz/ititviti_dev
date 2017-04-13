@@ -17,13 +17,13 @@
 #include <thread>
 
 void RTClient::start()
-{   std::thread producer([this] { this->produce(); });
+{   std::thread producer([this] { this->message_produce(); });
 
     uint8_t in[sizeof(uint64_t)];
     Decoder decoder;
     for (uint64_t i = 0; i < cnt; i++)
     {
-        ssize_t read = sockApi.Readn(in, sizeof(uint64_t));
+        sockApi.Readn(in, sizeof(uint64_t));
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -34,7 +34,7 @@ void RTClient::start()
         {
             double rtt = millis_diff(end, iterator->second);
             avg += rtt;
-            std::cout << "RT = " << millis_diff(end, iterator->second)
+            std::cout << "RT = " << rtt
                       << " millis" << std::endl;
             messages.erase(val);
         }
@@ -51,7 +51,7 @@ double RTClient::millis_diff(std::chrono::steady_clock::time_point end, std::chr
     return delta;
 }
 
-void RTClient::produce()
+void RTClient::message_produce()
 {   uint8_t out[sizeof(uint64_t)];
     Encoder encoder;
 

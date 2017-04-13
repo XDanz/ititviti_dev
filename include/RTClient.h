@@ -2,21 +2,27 @@
  * @file   RTClient.h
  * @Author Daniel Terranova (daniel.terranova@gmail.com)
  * @date   April, 2017
- * @brief  File contains declaration of the TCP Client which calculate RTT of a message.
+ * @brief  File contains declaration of the TCP Client which calculate RTT of a messages.
  *
- * RT Client or Round Trip Client send a message as a unsigned integer to the server
- * and calculate th Round Trip time for a message. The unsigned integer is stored
- * in a map together with a starting time before it is written to the underlying
- * TCP Buffer.
+ * RT Client (or Round trip Client) sends messages (uint64_t) to the server
+ * and calculate the Round trip time for the messages. A message is stored as a key
+ * in a std::map with the value as std::chrono::steady_clock::time_point. Just before it is written to the underlying
+ * socket the time_point is created and adds the key value pair association to the std::map.
+ *
+ * The RTClient uses the calling thread of the member function start() to read data from the socket. The RTClient
+ * starts an additional thread in start() (which runs mesagess_produce()) that writes n messages to the same socket.
+ *
+ * When a message is receive a new std::chrono::steady_clock::time_point is created and the message is
+ * retrieved from std::map. The value in the pair is used to calculate the round trip time
+ * which is displayed in milliseconds.
  *
  * The calculated RTT is not as accurate as it could be because the bytes to transport
- * over the network layer is not sent immediately instead it is transported to the
- * TCP buffer in kernel space. For this implementation the time that the bytes is in the
- * TCP buffer is included in RTT and also the time it spends in TCP Buffer on the
- * receiving end.
+ * over the network layer is not sent immediately, instead it is transported to the
+ * sending tcp buffer, before sending it over the network layer to the receiving tcp buffer on the server side.
  *
- * The RTClient uses the calling thread to receive bytes from the socket while it
- * starts additional thread that produces messages.
+ * For this implementation the time that the bytes is in the
+ * sending/receiving tcp buffer on client and server side is included in the round trip calculation.
+ *
  *
  */
 #ifndef ITIVITI_DEV_RTCLIENT_H
@@ -34,18 +40,21 @@
 class RTClient {
 public:
     /**
-     * Constructor to initiate RTClient
+     * @Brief Constructor to initiate RTClient
+     *
+     * The constructor creates a socket and connects the given socket to the IPv4 address and tcp port
+     * to the server.
      *
      * @param host string containing an IPv4 network address in dotted-decimal
      * format to connect to
+     *
      * @param port TCP port corresponding the listening host to which the client connect to
+     *
      * @param cnt Number of messages to produce
      */
-    RTClient(SockApi& sockApi,
-             const std::string& host,
-             int port,
-             int cnt): sockApi(sockApi), host(host), port(port), cnt(cnt) {
-        struct sockaddr_in	servaddr;
+    RTClient(SockApi& sockApi, const std::string& host, uint16_t port, uint64_t cnt):
+            sockApi(sockApi), host(host), port(port), cnt(cnt)
+    {   struct sockaddr_in	servaddr;
 
         sockApi.createSocket();
         bzero(&servaddr, sizeof(servaddr));
@@ -55,47 +64,81 @@ public:
 
         sockApi.setAddr(host,&servaddr.sin_addr);
         sockApi.connectfd((sockaddr *) &servaddr, sizeof(servaddr));
-
     };
-    /**!
-     * Start producing messages to the listening service
-      * Calculate and display the round	trip time in milliseconds for each message
-      */
+
+    /**
+     * @Brief member function to initiate the sending/listening of messages
+     *
+     * The member function start a thread that writes messages to the socket and
+     * the calling thread reads messages from the socket.
+     *
+     * Calculate and display the round trip time in milliseconds for each message,
+     * average round trip time for all messages in milliseconds and throughput of messages send to
+     * the socket in Bps (Bytes per seconds).
+     */
     void start();
 private:
-    // The method to run by starting thread
-    void produce();
+    /**
+     * @Brief The member function to run by the starting thread which writes n messages
+     * to the socket
+     */
+    void message_produce();
 
-    // host string containing an IPv4 network address in dotted-decimal
+    /**
+     * @Brief host string containing an IPv4 network address in dotted-decimal format
+     */
     const std::string& host;
 
-    // TCP port to connect to
-    int port;
+    /**
+     * @Brief TCP port to connect to
+     */
+    const uint16_t port;
 
-    // Number of messages to send
+    /**
+     * @Brief Number of messages to write to the socket
+     */
     uint64_t cnt;
 
-    // Each message is associated with a start clock to be able to count
-    // the round trip time, each message is identified by message count which increases monotonically.
+    /**
+     * @Brief map that contains mapping between the message and the time_point before it is written
+     * to the socket
+     *
+     * Each message is associated with a time_point before written to the socket this is used to calculate
+     * the round trip time for each message.
+     */
     std::map<uint64_t,std::chrono::steady_clock::time_point> messages;
 
+    /**
+     * @Brief SockApi is a wrapper class that wraps socket system calls.
+     *
+     */
     SockApi& sockApi;
 
- /*!
-  * @name    millis_diff()
-  * @brief   An utility member function to be able to calculate diff between two points in time
-  *
-  * This API provides utility member function to calculate diff between two points in time
-  *
-  * @param [in] end The end time point
-  * @param [in] start The start time point
-  *
-  * @retval Delta diff (=end-start) in milliseconds with nano precision
-  *
-  */
+    /**
+     * @name    millis_diff()
+     * @brief   An utility member function to be able to calculate difference between two time_point
+     *
+     * This API provides utility member function to calculate difference between two time_point displayed
+     * in units of milliseconds
+     *
+     * @param [in] end The end time_point
+     * @param [in] start The start time_point
+     *
+     * @retval Delta difference (end-start) in milliseconds units
+     *
+     */
     double millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start);
-    double avg = 0; // The average multiplied by the cnt to calculate the average
-    double elapsed = 0; // The elapsed time of all the written cnt messages. This is used to calculate throughput
-    //int sockfd;  // socket file descriptor
+
+    /**
+     * @Brief The average multiplied by the cnt to calculate the average round trip time of all messages
+     *
+     */
+    double avg = 0;
+
+    /**
+     * @Brief The elapsed time of all the written cnt messages. This is used to calculate throughput
+     *
+     */
+    double elapsed = 0;
 };
 #endif //ITIVITI_DEV_RTCLIENT_H
