@@ -2,7 +2,9 @@
 // Created by danter on 2016-08-02.
 //
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 #include "Encoder.h"
+
 
 TEST(Simple, tree_is_root)
 {

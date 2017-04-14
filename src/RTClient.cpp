@@ -23,7 +23,7 @@ void RTClient::start()
     Decoder decoder;
     for (uint64_t i = 0; i < cnt; i++)
     {
-        sockApi.Readn(in, sizeof(uint64_t));
+        sockApi.readFromSocket(in, sizeof(uint64_t));
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -36,7 +36,8 @@ void RTClient::start()
             avg += rtt;
             std::cout << "RT = " << rtt
                       << " millis" << std::endl;
-            messages.erase(val);
+
+            messages.erase(iterator);
         }
     }
 
@@ -61,7 +62,7 @@ void RTClient::message_produce()
         encoder.encodeIntBigEndian(out, i, 0, sizeof(uint64_t));
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
         messages.insert(std::pair<uint64_t, std::chrono::steady_clock::time_point>{i, begin});
-        sockApi.Writen(out, sizeof(uint64_t));
+        sockApi.writeToSocket(out, sizeof(uint64_t));
     }
     std::chrono::steady_clock::time_point end_run = std::chrono::steady_clock::now();
     elapsed = millis_diff(end_run, start_run);

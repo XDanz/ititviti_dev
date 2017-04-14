@@ -5,27 +5,16 @@
 
 #include "EchoServer.h"
 #include <arpa/inet.h>
-#include "RTPeer.h"
-
-const char *
-EchoServer::Inet_ntop(int family, const void *addrptr, char *strptr, size_t len)
-{
-	const char	*ptr;
-
-	if (strptr == NULL)		/* check for old code */
-		err_quit("NULL 3rd argument to inet_ntop");
-	if ( (ptr = inet_ntop(family, addrptr, strptr, len)) == NULL)
-		err_sys("inet_ntop error");		/* sets errno */
-	return(ptr);
-}
+#include <stdexcept>
+#include "ErrorUtil.h"
 
 void
 EchoServer::Inet_pton(int family, const char *strptr, void *addrptr)
 {
-	int		n;
+	int n;
 
 	if ( (n = inet_pton(family, strptr, addrptr)) < 0)
-		err_sys("inet_pton error for %s", strptr);	/* errno set */
+		throw std::runtime_error(ErrorUtil::err_sys("inet_pton error for %s", strptr));	/* errno set */
 	else if (n == 0)
-		err_quit("inet_pton error for %s", strptr);	/* errno not set */
+		throw std::runtime_error(("inet_pton error for %s", strptr));	/* errno not set */
 }

@@ -1,5 +1,6 @@
 #include <RTClient.h>
 #include <iostream>
+#include <ClientSocketImpl.h>
 //
 // Created by danter on 2017-04-10.
 //
@@ -27,7 +28,7 @@ main(int argc, char **argv)
           exit(1);
      }
 
-     SockApiImpl sockApi{};
+     ClientSocketImpl sockApi{};
      RTClient client {sockApi, std::string{argv[1]}, port, cnt};
      client.start();
 }

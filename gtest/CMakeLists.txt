@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.3)
 # We need thread support
 find_package(Threads REQUIRED)
-
 # Enable ExternalProject CMake module
 include(ExternalProject)
-
-# Download and install GoogleTest
+#
+## Download and install GoogleTest
 ExternalProject_Add(
         gtest
         URL https://github.com/google/googletest/archive/master.zip
@@ -43,3 +42,4 @@ include_directories("${source_dir}/googletest/include"
 
 add_subdirectory(encoder_test)
 add_subdirectory(decoder_test)
+enable_testing()

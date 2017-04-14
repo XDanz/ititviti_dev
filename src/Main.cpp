@@ -7,6 +7,7 @@
 int
 main(int argc, char **argv)
 {
+    ServerSocketImpl serverSocket{};
     int port;
     if (argc != 3) {
         std::cerr << "usage: server_start <IPaddress> <port>" << std::endl;
@@ -18,7 +19,7 @@ main(int argc, char **argv)
         exit(1);
     }
 
-    EchoServer server {std::string{argv[1]}, port};
+    EchoServer server {serverSocket, std::string{argv[1]}, port};
     server.start();
 
 }

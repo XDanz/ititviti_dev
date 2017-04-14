@@ -6,6 +6,7 @@
 
 TEST(Simple, tree_is_root)
 {
+    ClientSocketMock mock;
     Decoder decoder;
     uint64_t val = 10;
     uint8_t be[sizeof(uint64_t)];

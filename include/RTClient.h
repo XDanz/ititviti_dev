@@ -31,8 +31,8 @@
 #include <sys/socket.h>
 #include <string>
 #include <map>
-#include "RTPeer.h"
-#include "SockApi.h"
+#include "ErrorUtil.h"
+#include "IClientSocket.h"
 #include <chrono>
 #include <string.h>
 #include <arpa/inet.h>
@@ -52,7 +52,7 @@ public:
      *
      * @param cnt Number of messages to produce
      */
-    RTClient(SockApi& sockApi, const std::string& host, uint16_t port, uint64_t cnt):
+    RTClient(IClientSocket& sockApi, const std::string& host, uint16_t port, uint64_t cnt):
             sockApi(sockApi), host(host), port(port), cnt(cnt)
     {   struct sockaddr_in	servaddr;
 
@@ -63,7 +63,7 @@ public:
         servaddr.sin_port   = htons(port);
 
         sockApi.setAddr(host,&servaddr.sin_addr);
-        sockApi.connectfd((sockaddr *) &servaddr, sizeof(servaddr));
+        sockApi.connectSocket((sockaddr*) &servaddr, sizeof(servaddr));
     };
 
     /**
@@ -112,7 +112,7 @@ private:
      * @Brief SockApi is a wrapper class that wraps socket system calls.
      *
      */
-    SockApi& sockApi;
+    IClientSocket& sockApi;
 
     /**
      * @name    millis_diff()

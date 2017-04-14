@@ -1,85 +1,43 @@
+/**
+ * @file   EchoServer.cpp
+ * @Author Daniel Terranova (daniel.terranova@gmail.com)
+ * @date   April, 2017
+ * @brief  File contains definitions of the TCP Echo server member function.
+ *
+ */
+
 #include <netinet/in.h>
 #include <string.h>
 #include <sys/poll.h>
 #include <cstdlib>
-#include "RTPeer.h"
-#include <cerrno>
+#include "ErrorUtil.h"
 #include <unistd.h>
+#include <stdexcept>
 #include "EchoServer.h"
-//
-// Created by danter on 2017-04-10.
-//
-int
-EchoServer::Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)
-{
-    int n;
-
-    if ( (n = poll(fdarray, nfds, timeout)) < 0)
-        err_sys("poll error");
-
-    return(n);
-}
-
-void
-EchoServer::Bind(int fd, const struct sockaddr *sa, socklen_t salen)
-{
-    if (bind(fd, sa, salen) < 0)
-        err_sys("bind error");
-}
-
-/* Fatal error related to system call
- * Print message and terminate */
-
-/* include Listen */
-void
-EchoServer::Listen(int fd, int backlog)
-{
-    if (listen(fd, backlog) < 0)
-        err_sys("listen error");
-}
-
-int
-EchoServer::Accept(int fd, struct sockaddr *sa, socklen_t *salenptr)
-{
-    int n;
-
-    again:
-    if ( (n = accept(fd, sa, salenptr)) < 0) {
-#ifdef	EPROTO
-        if (errno == EPROTO || errno == ECONNABORTED)
-#else
-            if (errno == ECONNABORTED)
-#endif
-            goto again;
-        else
-            err_sys("accept error");
-    }
-    return(n);
-}
-
 
 void EchoServer::start() 
 {
-    int i, maxi, listenfd, connfd, sockfd;
+    int i, maxi, connfd, sockfd;
     int nready;
     ssize_t n;
+    int MAXLINE = 4096;	/* max text line length */
     char buf[MAXLINE];
     socklen_t clilen;
     struct pollfd client[FOPEN_MAX];
     struct sockaddr_in cliaddr, servaddr;
 
-    listenfd = socket(AF_INET, SOCK_STREAM, 0);
+    serverSocket.createSocket();
 
     bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET;
     Inet_pton(AF_INET, serverHost.c_str(), &servaddr.sin_addr.s_addr);
     servaddr.sin_port = htons(serverPort);
 
-    Bind(listenfd, (sockaddr *) & servaddr, sizeof(servaddr));
+    serverSocket.Bind((sockaddr *) & servaddr, sizeof(servaddr));
 
-    Listen(listenfd, LISTENQ);
+    serverSocket.Listen(LISTENQ);
 
-    client[0].fd = listenfd;
+    client[0].fd = serverSocket.getSockfd();
     client[0].events = POLLRDNORM;
     for (i = 1; i<FOPEN_MAX; i++)
         client[i].fd = -1;        /* -1 indicates available entry */
@@ -87,59 +45,66 @@ void EchoServer::start()
 
     for (;;) 
     {
-        nready = Poll(client, maxi+1, INFTIM);
-
-        /** data may be read on listening file descriptor which means
+        nready = IOUtil::Poll(client, maxi+1, INFTIM);
+        /**
+         * data may be read on listening file descriptor which means
          * that new client has connected
          */
-        if (client[0].revents & POLLRDNORM) 
-        {    /** new client connection **/
+        if (client[0].revents & POLLRDNORM)
+        {    /** handle new client **/
             clilen = sizeof(cliaddr);
-            connfd = Accept(listenfd, (sockaddr*) &cliaddr, &clilen);
+            connfd = serverSocket.Accept((sockaddr*) &cliaddr, &clilen);
 
             for (i = 1; i < FOPEN_MAX; i++)
-                if (client[i].fd < 0) {
-                    client[i].fd = connfd;    /** save descriptor **/
+            {
+                if (client[i].fd < 0)
+                {
+                    /** save descriptor **/
+                    client[i].fd = connfd;
                     break;
                 }
-            if (i==FOPEN_MAX)
-                err_quit("too many clients");
+            }
+
+            if (i == FOPEN_MAX)
+                throw std::runtime_error(ErrorUtil::err_sys("too many clients"));
 
             client[i].events = POLLRDNORM;
             if (i > maxi)
                 maxi = i;                /** max index in client[] array **/
 
-            if (--nready<=0)
+            if (--nready <= 0)
                 continue;                /** no more readable descriptors **/
         }
 
-        for (i = 1; i<=maxi; i++) 
+        for (i = 1; i <= maxi; i++)
         {    /** check all clients for data **/
             if ( (sockfd = client[i].fd) < 0)
                 continue;
+
             if (client[i].revents & (POLLRDNORM | POLLERR)) 
             {    /** Read/Write event or error */
-                if ((n = read(sockfd, buf, MAXLINE))<0) 
+                if ( (n = read(sockfd, buf, MAXLINE)) < 0)
                 {
-                    if (errno==ECONNRESET) 
+                    if (errno == ECONNRESET)
                     {
                         /** connection reset by client **/
                         printf("client[%d] aborted connection\n", i);
-                        Close(sockfd);
+                        ErrorUtil::Close(sockfd);
                         client[i].fd = -1;
                     }
                     else
-                        err_sys("read error");
-                } else if (n==0) {
+                        ErrorUtil::err_sys("read error");
+                }
+                else if (n == 0)
+                {
                     /** connection closed by client **/
                     printf("client[%d] closed connection\n", i);
-                    Close(sockfd);
+                    ErrorUtil::Close(sockfd);
                     client[i].fd = -1;
-                }
-                else
-                    Writen(sockfd, buf, n);
+                } else
+                    IOUtil::Writen(sockfd, buf, n);
 
-                if (--nready<=0)
+                if (--nready <= 0)
                     break;                /** no more readable descriptors **/
             }
         }
