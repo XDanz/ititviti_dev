@@ -56,6 +56,8 @@ following:
 
 ##### Requirement
 
+The project was developed on Linux x86_64 with 4.4.0-72-generic kernel.
+
 To compile and run the application the following is required:
 
 1. cmake >= 3.3
@@ -74,14 +76,14 @@ $ make
 First it is required to start the echo server, in one terminal (1) run:
 
 ```shell
-$ ./server_start 127.0.0.1 <port>
+$ main/server_start 127.0.0.1 <port>
 ```
 Where *\<port\>* should be replaced by chosen listening port.
 
 Start additional terminal, (2) and run:
 
 ```shell
-$ ./client_start 127.0.0.1 <port> <num-requests>
+$ main/client_start 127.0.0.1 <port> <num-requests>
 ```
 
 Where *\<port\>* should be replaced by the chosen port specified in the terminal (1).
@@ -89,7 +91,7 @@ The *\<num-request\>* is the number of request the client is issued to the serve
  
 For example:
  ```shell
- $ ./client_start 127.0.0.1 4174 10
+ $ main/client_start 127.0.0.1 4174 10
 RT = 0.213776 millis
 RT = 0.248452 millis
 RT = 0.244865 millis
