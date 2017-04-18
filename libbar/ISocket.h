@@ -1,7 +1,9 @@
-//
-// Created by danter on 2017-04-14.
-//
-
+/**
+ * @file   ISocket.h
+ * @Author Daniel Terranova (daniel.terranova@gmail.com)
+ * @date   April, 2017
+ * @brief  File contains implementation of generic socket.
+ */
 #ifndef ITIVITI_DEV_ISOCKET_H
 #define ITIVITI_DEV_ISOCKET_H
 

@@ -6,25 +6,25 @@ set(MainServer_SRCS
         ServerMain.cpp
         )
 
-add_executable(myAppClient
+add_executable(client_start
     ${MainClient_SRCS}
 )
 
-add_executable(myAppServer
+add_executable(server_start
     ${MainServer_SRCS}
 )
 
 # Specify here the libraries this program depends on
-target_link_libraries(myAppClient
+target_link_libraries(client_start
     libfoo
     libbar
 )
 
-target_link_libraries(myAppServer
+target_link_libraries(server_start
         libfoo2
         libbar
         )
 
 
-install(TARGETS myAppClient DESTINATION bin)
-install(TARGETS myAppServer DESTINATION bin)
+install(TARGETS client_start DESTINATION bin)
+install(TARGETS server_start DESTINATION bin)
