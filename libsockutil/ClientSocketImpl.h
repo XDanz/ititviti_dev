@@ -20,13 +20,15 @@
 
 class ClientSocketImpl: public IClientSocket {
 
-    void connectSocket(sockaddr* sockaddr, socklen_t socklen) override
+    void
+    connectSocket(sockaddr* sockaddr, socklen_t socklen) override
     {
         if (connect(this->sockfd, sockaddr, socklen) < 0)
             throw std::runtime_error(ErrorUtil::err_sys("Connect error"));
     }
 
-    void setAddr(const std::string host, void* buf)
+    void
+    setAddr(const std::string host, void* buf)
     {
         if (inet_pton(AF_INET, host.c_str(), buf) <=0 )
             throw std::runtime_error(ErrorUtil::err_sys("inet_pton error for %s", host.c_str()));
@@ -39,8 +41,5 @@ class ClientSocketImpl: public IClientSocket {
     ssize_t readFromSocket(void* ptr, size_t nbytes) override
     { return IOUtil::Readn(this->sockfd, ptr, nbytes); }
 
-    int tt() { return 1;}
-
-    int tv(int x) { return x;}
 };
 #endif //ITIVITI_DEV_CLIENTSOCKETIMPL_H

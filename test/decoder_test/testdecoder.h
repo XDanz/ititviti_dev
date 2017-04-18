@@ -1,15 +1,15 @@
 #include "gtest/gtest.h"
 
 // The fixture for testing class Foo.
-class EncoderTest : public ::testing::Test {
+class DecoderTest : public ::testing::Test {
 
 protected:
 
     // You can do set-up work for each test here.
-    EncoderTest();
+    DecoderTest();
 
     // You can do clean-up work that doesn't throw exceptions here.
-    virtual ~EncoderTest();
+    virtual ~DecoderTest();
 
     // If the constructor and destructor are not enough for setting up
     // and cleaning up each test, you can define the following methods:
@@ -21,5 +21,5 @@ protected:
     // Code here will be called immediately after each test (right
     // before the destructor).
     virtual void TearDown();
-
+    
 };

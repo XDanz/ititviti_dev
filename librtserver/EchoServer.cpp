@@ -12,8 +12,8 @@
 #include <cstdlib>
 #include <unistd.h>
 #include <stdexcept>
+#include <IOUtil.h>
 #include "EchoServer.h"
-#include "../libbar/IOUtil.h"
 
 void EchoServer::start() 
 {

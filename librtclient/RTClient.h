@@ -31,8 +31,9 @@
 #include <sys/socket.h>
 #include <string>
 #include <map>
-#include "../libbar/ErrorUtil.h"
-#include "../libbar/IClientSocket.h"
+#include "../libsockutil/ErrorUtil.h"
+#include "../libsockutil/IClientSocket.h"
+#include "../libsockutil/IClientSocket.h"
 #include <chrono>
 #include <string.h>
 #include <arpa/inet.h>

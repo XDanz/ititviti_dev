@@ -1,5 +1,5 @@
-#include <Encoder.h>
 #include "testencoder.h"
+#include "../../libsockutil/Encoder.h"
 
 EncoderTest::EncoderTest() {
 

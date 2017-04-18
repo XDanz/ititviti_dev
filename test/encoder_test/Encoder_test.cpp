@@ -3,7 +3,7 @@
 //
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include "../../libbar/Encoder.h"
+#include "../../libsockutil/Encoder.h"
 
 
 TEST(Simple, tree_is_root)

@@ -58,7 +58,7 @@ following:
 
 To compile and run the application the following is required:
 
-1. cmake >= 3.5.1
+1. cmake >= 3.3
 2. GCC 5.4.0, C++ with std 11
   
 ##### build

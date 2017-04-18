@@ -1,15 +1,16 @@
 #include "gtest/gtest.h"
+#include "mockclient_sock.h"
 
 // The fixture for testing class Foo.
-class EncoderTest : public ::testing::Test {
+class RTClientTest : public ::testing::Test {
 
 protected:
 
     // You can do set-up work for each test here.
-    EncoderTest();
+    RTClientTest();
 
     // You can do clean-up work that doesn't throw exceptions here.
-    virtual ~EncoderTest();
+    virtual ~RTClientTest();
 
     // If the constructor and destructor are not enough for setting up
     // and cleaning up each test, you can define the following methods:
@@ -22,4 +23,6 @@ protected:
     // before the destructor).
     virtual void TearDown();
 
+    // The mock bar library shaed by all tests
+    Mockclient_sock sock;
 };

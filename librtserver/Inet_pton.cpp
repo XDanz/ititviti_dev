@@ -4,7 +4,7 @@
  */
 
 #include "EchoServer.h"
-#include "../libbar/ErrorUtil.h"
+#include "../libsockutil/ErrorUtil.h"
 #include <arpa/inet.h>
 #include <stdexcept>
 

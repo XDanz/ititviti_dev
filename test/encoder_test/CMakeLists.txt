@@ -3,8 +3,7 @@ file(GLOB SRCS *.cpp)
 ADD_EXECUTABLE(testencoder ${SRCS})
 
 TARGET_LINK_LIBRARIES(testencoder
-    libfoo
-    libfoo2
+    libsockutil
     libgtest
     libgmock
 )

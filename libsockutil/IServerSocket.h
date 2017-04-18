@@ -48,11 +48,7 @@ class ServerSocketImpl: public IServerSocket {
 
         again:
         if ( (n = accept(this->sockfd, sa, salenptr)) < 0) {
-#ifdef	EPROTO
             if (errno == EPROTO || errno == ECONNABORTED)
-#else
-                if (errno == ECONNABORTED)
-#endif
                 goto again;
             else
                 throw std::runtime_error(ErrorUtil::err_sys("accept error"));

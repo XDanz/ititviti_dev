@@ -1,11 +1,12 @@
-cmake_minimum_required(VERSION 3.3)
-file(GLOB *.cpp)
+file(GLOB SRCS *.cpp)
 
-add_executable(test_decoder Decoder_test.cpp ../../libbar/Decoder.cpp Decoder_test_main.cpp)
-include_directories(../../include)
-target_link_libraries(test_decoder
+ADD_EXECUTABLE(testdecoder ${SRCS})
+
+TARGET_LINK_LIBRARIES(testdecoder
+        libsockutil
         libgtest
         libgmock
         )
 
-install(TARGETS test_decoder DESTINATION bin)
+add_test(NAME testdecoder
+        COMMAND testdecoder)

@@ -13,16 +13,16 @@ set(libbar_SRCS
         )
 
 # Declare the library
-add_library(libbar STATIC
+add_library(libsockutil STATIC
     ${libbar_SRCS}
 )
 
-#target_link_libraries(libbar
+#target_link_libraries(libsockutil
 #    libfoo libfoo2
 #)
 
 # Specify here the include directories exported
 # by this library
-target_include_directories(libbar PUBLIC
+target_include_directories(libsockutil PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
