@@ -16,9 +16,9 @@
 #include <cerrno>
 #include <unistd.h>
 #include <stdexcept>
-#include "ISocket.h"
+#include "GenericSocket.h"
 
-class IServerSocket: public ISocket {
+class IServerSocket: public GenericSocket {
 public:
     virtual void Bind(const struct sockaddr *sa, socklen_t salen) = 0;
     virtual void Listen(int backlog) = 0;

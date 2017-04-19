@@ -1,11 +1,13 @@
-//
-// Created by danter on 2017-04-14.
-//
+/**
+ * @file   IOUtil.h
+ * @Author Daniel Terranova (daniel.terranova@gmail.com)
+ * @date   April, 2017
+ * @brief  File contains implementation of Input/Output utility functions
+ */
 
 #ifndef ITIVITI_DEV_IOUTIL_H
 #define ITIVITI_DEV_IOUTIL_H
 
-#include <bits/socket.h>
 #include <sys/socket.h>
 #include <stdexcept>
 #include <syslog.h>
@@ -16,7 +18,7 @@
 #include <sys/poll.h>
 #include <stdarg.h>
 #include "ErrorUtil.h"
-class IOUtil
+class SocketUtil
 {
 public:
 
@@ -37,6 +39,11 @@ public:
         return(n);
     }
 
+    /**
+      * @Brief waits for one of a set of file descriptors to become ready
+      * to perform I/O
+      * @return number of file descriptors ready to perform I/O
+      */
     int
     static Poll(struct pollfd *fdarray, unsigned long nfds, int timeout)
     {

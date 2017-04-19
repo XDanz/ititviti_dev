@@ -30,13 +30,12 @@
 
 #include <sys/socket.h>
 #include <string>
-#include <map>
-#include "../libsockutil/ErrorUtil.h"
-#include "../libsockutil/IClientSocket.h"
-#include "../libsockutil/IClientSocket.h"
+#include <unordered_map>
 #include <chrono>
 #include <string.h>
 #include <arpa/inet.h>
+#include <mutex>
+#include <IClientSocket.h>
 
 class RTClient {
 public:
@@ -54,7 +53,7 @@ public:
      * @param cnt Number of messages to produce
      */
     RTClient(IClientSocket& sockApi, const std::string& host, uint16_t port, uint64_t cnt):
-            sockApi(sockApi), host(host), port(port), cnt(cnt)
+            clientSocket(sockApi), host(host), port(port), cnt(cnt)
     {   struct sockaddr_in	servaddr;
 
         sockApi.createSocket();
@@ -107,13 +106,13 @@ private:
      * Each message is associated with a time_point before written to the socket this is used to calculate
      * the round trip time for each message.
      */
-    std::map<uint64_t,std::chrono::steady_clock::time_point> messages;
+    std::unordered_map<uint64_t,std::chrono::steady_clock::time_point> messages;
 
     /**
      * @Brief SockApi is a wrapper class that wraps socket system calls.
      *
      */
-    IClientSocket& sockApi;
+    IClientSocket& clientSocket;
 
     /**
      * @name    millis_diff()
@@ -136,10 +135,6 @@ private:
      */
     double avg = 0;
 
-    /**
-     * @Brief The elapsed time of all the written cnt messages. This is used to calculate throughput
-     *
-     */
-    double elapsed = 0;
+    std::mutex map_guard_mutex;
 };
 #endif //ITIVITI_DEV_RTCLIENT_H

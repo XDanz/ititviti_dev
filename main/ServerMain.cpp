@@ -10,18 +10,22 @@ int
 main(int argc, char **argv)
 {
     ServerSocketImpl serverSocket{};
-    int port;
+    uint16_t port;
     if (argc != 3) {
         std::cerr << "usage: server_start <IPaddress> <port>" << std::endl;
         exit(1);
     }
 
-    if ((port = atoi(argv[2])) == 0) {
+    if ((port = uint16_t(atoi(argv[2]))) == 0) {
         std::cerr << "'" << argv[2] << "' is not a number!" << std::endl;
         exit(1);
     }
 
-    EchoServer server {serverSocket, std::string{argv[1]}, port};
-    server.start();
+    try {
+        EchoServer server {serverSocket, std::string{argv[1]}, port};
+        server.start();
+    } catch (std::runtime_error &exception) {
+        std::cerr << exception.what() << std::endl;
+    }
 
 }

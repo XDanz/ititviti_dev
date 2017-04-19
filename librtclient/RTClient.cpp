@@ -4,8 +4,6 @@
  * @date   April, 2017
  * @brief  File contains declaration of the TCP Client which calculate RTT of a message.
  *
- * Detailed description of file.
- *
  */
 #include <netinet/in.h>
 #include <chrono>
@@ -23,27 +21,44 @@ void RTClient::start()
     Decoder decoder;
     for (uint64_t i = 0; i < cnt; i++)
     {
-        sockApi.readFromSocket(in, sizeof(uint64_t));
+        clientSocket.readFromSocket(in, sizeof(uint64_t));
 
         std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
         uint64_t val = decoder.decodeIntBigEndian(in, 0, sizeof(uint64_t));
-        std::map<uint64_t,std::chrono::steady_clock::time_point>::iterator iterator;
+        std::unordered_map<uint64_t,std::chrono::steady_clock::time_point>::iterator iterator;
+        /** lock the mutex here before accessing the map **/
+        map_guard_mutex.lock();
         iterator = messages.find(val);
         if (iterator != messages.end())
         {
             double rtt = millis_diff(end, iterator->second);
             avg += rtt;
             std::cout << "RT = " << rtt
-                      << " millis" << std::endl;
+                      << " millis, RT rate: " << (sizeof(uint64_t)*1000)/(rtt) << " Bps" << std::endl;
 
+            size_t before = messages.size();
             messages.erase(iterator);
+            if (before > 0) {
+                if ((before-1)!=messages.size())
+                {
+                    char buf[1025];
+                    snprintf(buf, 1025, "Error could not remove message %ld in map", val);
+                    throw std::runtime_error(buf);
+                }
+            }
+
+        } else {
+            char buf[1025];
+            snprintf(buf, 1025, "Error could not find message %ld in map", val);
+            throw std::runtime_error(buf);
         }
+        map_guard_mutex.unlock();
     }
 
     producer.join();
+    clientSocket.Close();
     std::cout << "Avg: " << avg/double(cnt) << " millis" << std::endl;
-    std::cout << "Throughput: " << (cnt*sizeof(uint64_t)*1000)/(elapsed) << " Bps" << std::endl;
 }
 
 double RTClient::millis_diff(std::chrono::steady_clock::time_point end, std::chrono::steady_clock::time_point start)
@@ -56,14 +71,13 @@ void RTClient::message_produce()
 {   uint8_t out[sizeof(uint64_t)];
     Encoder encoder;
 
-    std::chrono::steady_clock::time_point start_run = std::chrono::steady_clock::now();
     for (uint64_t i = 0; i < cnt; i++)
     {
         encoder.encodeIntBigEndian(out, i, 0, sizeof(uint64_t));
         std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+        map_guard_mutex.lock();
         messages.insert(std::pair<uint64_t, std::chrono::steady_clock::time_point>{i, begin});
-        sockApi.writeToSocket(out, sizeof(uint64_t));
+        map_guard_mutex.unlock();
+        clientSocket.writeToSocket(out, sizeof(uint64_t));
     }
-    std::chrono::steady_clock::time_point end_run = std::chrono::steady_clock::now();
-    elapsed = millis_diff(end_run, start_run);
 }

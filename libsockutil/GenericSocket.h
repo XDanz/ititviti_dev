@@ -17,15 +17,15 @@
 #include <cerrno>
 #include <unistd.h>
 #include <stdarg.h>
-#include "IOUtil.h"
-#include "ISocket.h"
+#include "SocketUtil.h"
+#include "GenericSocket.h"
 #include <zconf.h>
 #include <stdexcept>
 #include "ErrorUtil.h"
 
-class ISocket {
+class GenericSocket {
 public:
-    ISocket() { }
+    GenericSocket() { }
     virtual void createSocket()
     {
         if ( (this->sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)

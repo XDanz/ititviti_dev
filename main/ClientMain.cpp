@@ -28,9 +28,13 @@ main(int argc, char **argv)
           exit(1);
      }
 
-     ClientSocketImpl sockApi{};
-     RTClient client {sockApi, std::string{argv[1]}, port, cnt};
-     client.start();
+     try {
+          ClientSocketImpl sockApi{};
+          RTClient client {sockApi, std::string{argv[1]}, port, cnt};
+          client.start();
+     } catch (std::runtime_error &exception) {
+          std::cerr << exception.what() << std::endl;
+     }
 }
 
 

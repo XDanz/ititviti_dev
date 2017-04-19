@@ -5,7 +5,6 @@
 #ifndef ITIVITI_DEV_CLIENTSOCKETIMPL_H
 #define ITIVITI_DEV_CLIENTSOCKETIMPL_H
 
-#include <bits/socket.h>
 #include <sys/socket.h>
 #include <stdexcept>
 #include <syslog.h>
@@ -14,8 +13,8 @@
 #include <cerrno>
 #include <unistd.h>
 #include <stdarg.h>
-#include "IOUtil.h"
-#include "ISocket.h"
+#include "SocketUtil.h"
+#include "GenericSocket.h"
 #include "IClientSocket.h"
 
 class ClientSocketImpl: public IClientSocket {
@@ -36,10 +35,10 @@ class ClientSocketImpl: public IClientSocket {
 
     void
     writeToSocket(void* ptr, size_t nbytes)
-    {   IOUtil::Writen(this->sockfd, ptr, nbytes); }
+    {   SocketUtil::Writen(this->sockfd, ptr, nbytes); }
 
     ssize_t readFromSocket(void* ptr, size_t nbytes) override
-    { return IOUtil::Readn(this->sockfd, ptr, nbytes); }
+    { return SocketUtil::Readn(this->sockfd, ptr, nbytes); }
 
 };
 #endif //ITIVITI_DEV_CLIENTSOCKETIMPL_H

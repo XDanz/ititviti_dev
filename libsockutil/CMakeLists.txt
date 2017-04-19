@@ -7,8 +7,8 @@ set(libbar_SRCS
         Decoder.cpp
         Encoder.h
         Encoder.cpp
-        IOUtil.h
-        ISocket.h
+        SocketUtil.h
+        GenericSocket.h
         ClientSocketImpl.h
         )
 

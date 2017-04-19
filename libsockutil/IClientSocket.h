@@ -13,10 +13,10 @@
 #include <cerrno>
 #include <unistd.h>
 #include <stdarg.h>
-#include "IOUtil.h"
-#include "ISocket.h"
+#include "SocketUtil.h"
+#include "GenericSocket.h"
 
-class IClientSocket: public ISocket {
+class IClientSocket: public GenericSocket {
 public:
     IClientSocket() {}
     virtual ~IClientSocket() {}
