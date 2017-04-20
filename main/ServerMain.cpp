@@ -4,8 +4,8 @@
 #include <string>
 #include <iostream>
 #include <EchoServer.h>
-#include <IServerSocket.h>
-#include "../librtserver/EchoServer.h"
+#include <ServerSocketImpl.h>
+
 int
 main(int argc, char **argv)
 {

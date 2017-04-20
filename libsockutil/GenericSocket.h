@@ -1,5 +1,5 @@
 /**
- * @file   ISocket.h
+ * @file   GenericSocket.h
  * @Author Daniel Terranova (daniel.terranova@gmail.com)
  * @date   April, 2017
  * @brief  File contains implementation of generic socket.

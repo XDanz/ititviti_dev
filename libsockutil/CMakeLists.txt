@@ -10,16 +10,13 @@ set(libbar_SRCS
         SocketUtil.h
         GenericSocket.h
         ClientSocketImpl.h
+        ServerSocketImpl.h
         )
 
 # Declare the library
 add_library(libsockutil STATIC
     ${libbar_SRCS}
 )
-
-#target_link_libraries(libsockutil
-#    libfoo libfoo2
-#)
 
 # Specify here the include directories exported
 # by this library
