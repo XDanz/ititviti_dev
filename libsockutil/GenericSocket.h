@@ -19,7 +19,6 @@
 #include <stdarg.h>
 #include "SocketUtil.h"
 #include "GenericSocket.h"
-#include <zconf.h>
 #include <stdexcept>
 #include "ErrorUtil.h"
 
