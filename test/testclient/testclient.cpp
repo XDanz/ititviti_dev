@@ -10,7 +10,9 @@ RTClientTest::RTClientTest() {
 
 RTClientTest::~RTClientTest() {};
 
-void RTClientTest::SetUp() {};
+void RTClientTest::SetUp() {
+    sock.DelegateToFake();
+};
 
 void RTClientTest::TearDown() {};
 

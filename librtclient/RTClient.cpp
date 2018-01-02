@@ -30,6 +30,7 @@ void RTClient::start()
         /** lock the mutex here before accessing the map **/
         map_guard_mutex.lock();
         iterator = messages.find(val);
+        std::cout << "get " << val << std::endl;
         if (iterator != messages.end())
         {
             double rtt = millis_diff(end, iterator->second);
@@ -78,6 +79,7 @@ void RTClient::message_produce()
         map_guard_mutex.lock();
         messages.insert(std::pair<uint64_t, std::chrono::steady_clock::time_point>{i, begin});
         map_guard_mutex.unlock();
+        std::cout << "put " << i << std::endl;
         clientSocket.writeToSocket(out, sizeof(uint64_t));
     }
 }
