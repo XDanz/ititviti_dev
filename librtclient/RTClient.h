@@ -54,7 +54,7 @@ public:
      */
     RTClient(IClientSocket& sockApi, const std::string& host, uint16_t port, uint64_t cnt):
             clientSocket(sockApi), host(host), port(port), cnt(cnt)
-    {   struct sockaddr_in	servaddr;
+    {   struct sockaddr_in	servaddr{};
 
         sockApi.createSocket();
         bzero(&servaddr, sizeof(servaddr));
@@ -87,7 +87,7 @@ private:
     /**
      * @Brief host string containing an IPv4 network address in dotted-decimal format
      */
-    const std::string& host;
+    const std::string host;
 
     /**
      * @Brief TCP port to connect to

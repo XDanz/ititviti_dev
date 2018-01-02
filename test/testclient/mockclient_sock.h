@@ -37,24 +37,16 @@ public:
         auto* buf = new char[BUFSIZ];
         memcpy(buf, ptr, nbytes);
         blocking_queue.push(buf);
-        std::thread::id this_id = std::this_thread::get_id();
-        std::cout << "fake_write_action from: " << this_id <<  std::endl;
     }
 
     virtual ssize_t fake_read_action(void* ptr, size_t nbytes) {
         char * buf  = blocking_queue.pop();
         memcpy(ptr,buf,nbytes);
         delete [] buf;
-        std::thread::id this_id = std::this_thread::get_id();
-        std::cout << "fake_read_action from:" << this_id << std::endl;
     }
 
 private:
     queue<char*> blocking_queue;
-    std::mutex mtx;
-    std::condition_variable cv;
-    bool ready = false;
-    char buf[BUFSIZ];
 };
 
 class Mockclient_sock: public IClientSocket

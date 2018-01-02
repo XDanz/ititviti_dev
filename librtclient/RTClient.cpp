@@ -23,13 +23,13 @@ void RTClient::start()
     {
         clientSocket.readFromSocket(in, sizeof(uint64_t));
 
-        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+        auto end = std::chrono::steady_clock::now();
 
-        uint64_t val = decoder.decodeIntBigEndian(in, 0, sizeof(uint64_t));
-        std::unordered_map<uint64_t,std::chrono::steady_clock::time_point>::iterator iterator;
+        auto val = decoder.decodeIntBigEndian(in, 0, sizeof(uint64_t));
+
         /** lock the mutex here before accessing the map **/
         map_guard_mutex.lock();
-        iterator = messages.find(val);
+        auto iterator = messages.find(val);
         std::cout << "get " << val << std::endl;
         if (iterator != messages.end())
         {
@@ -49,10 +49,6 @@ void RTClient::start()
                 }
             }
 
-        } else {
-            char buf[1025];
-            snprintf(buf, 1025, "Error could not find message %ld in map", val);
-            throw std::runtime_error(buf);
         }
         map_guard_mutex.unlock();
     }
@@ -79,7 +75,6 @@ void RTClient::message_produce()
         map_guard_mutex.lock();
         messages.insert(std::pair<uint64_t, std::chrono::steady_clock::time_point>{i, begin});
         map_guard_mutex.unlock();
-        std::cout << "put " << i << std::endl;
         clientSocket.writeToSocket(out, sizeof(uint64_t));
     }
 }
